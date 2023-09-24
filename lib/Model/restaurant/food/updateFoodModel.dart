@@ -30,7 +30,7 @@ class Data {
   String? quantity;
   String? price;
   String? category;
-  // Null? image;
+  Null? image;
 
   Data(
       {this.id,
@@ -40,7 +40,7 @@ class Data {
         this.quantity,
         this.price,
         this.category,
-        // this.image
+        this.image
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -51,7 +51,7 @@ class Data {
     quantity = json['quantity'];
     price = json['price'];
     category = json['category'];
-    // image = json['image'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,7 +63,7 @@ class Data {
     data['quantity'] = this.quantity;
     data['price'] = this.price;
     data['category'] = this.category;
-    // data['image'] = this.image;
+    data['image'] = this.image;
     return data;
   }
 }

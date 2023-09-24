@@ -23,6 +23,9 @@ Future<void> loginUser({
 
   try {
     var response = await Api().authData(userData, ApiConstants.login);
+    print('Response Status Code is : ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
     var body = json.decode(response.body);
     print(body);
     if (body['success'] == true) {

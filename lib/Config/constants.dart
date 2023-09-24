@@ -1,5 +1,5 @@
 class ApiConstants{
-  static String baseUrl ='https://eb8e-2409-40f3-12-c1d2-99a0-fca6-a0bb-9107.ngrok-free.app';
+  static String baseUrl ='https://7c9e-2409-40f3-9-cf1c-e058-4571-39d5-3c14.ngrok-free.app';
 
   static String register = '/api/userRegistrerAPI';
   static String login = '/api/LogiAPIView';
