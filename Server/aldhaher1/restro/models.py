@@ -46,6 +46,6 @@ class food(models.Model):
     quantity = models.CharField(max_length=50)
     price = models.CharField(max_length=20)
     category = models.CharField(max_length=50)
-    # image = models.ImageField(upload_to='food_images/',null=True)
+    image = models.ImageField(upload_to='food_images/')
     def __str__(self):
         return self.food_name

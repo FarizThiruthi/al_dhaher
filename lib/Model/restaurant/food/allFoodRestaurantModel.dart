@@ -37,7 +37,7 @@
    String? quantity;
    String? price;
    String? category;
-   Null? image;
+   String? image;
 
    Data(
        {this.id,
@@ -57,7 +57,7 @@
      quantity = json['quantity'];
      price = json['price'];
      category = json['category'];
-     image = json['image'];
+     image = json['image'] ?? '';
    }
 
    Map<String, dynamic> toJson() {

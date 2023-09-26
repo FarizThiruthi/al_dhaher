@@ -21,8 +21,10 @@ Future<AllFoodRestaurantModel?> getAllRestaurantFoods(String baseUrl) async {
 //     final response = await http.get(Uri.parse(apiUrl));
     //print('uid = ${body['data']['userid']}');
     final response = await http.get(Uri.parse('$baseUrl${ApiConstants.foodAllRestaurant}/${restoId.toString()}/'));
-
+    // var body=json.decode(response.body);
+    // print(body);
     if (response.statusCode == 200) {
+
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       return AllFoodRestaurantModel.fromJson(jsonResponse);
     } else {

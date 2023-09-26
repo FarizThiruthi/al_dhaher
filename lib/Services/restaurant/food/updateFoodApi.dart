@@ -19,6 +19,7 @@ Future<Map<String, dynamic>> updateFood(String foodId, Map<String, dynamic> food
     print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
+
       final Map<String, dynamic> updatedFoodData = json.decode(response.body);
       print('Food updated successfully');
       return updatedFoodData;
