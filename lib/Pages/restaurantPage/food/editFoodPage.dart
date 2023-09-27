@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../Services/restaurant/food/updateFoodApi.dart';
+import '../../../Services/restaurant/food/updatefood2.dart';
 
 class EditFoodPage extends StatefulWidget {
   final Map<String, dynamic> foodData;
+  final Function? onFoodUpdated;
 
-  EditFoodPage({Key? key, required this.foodData}) : super(key: key);
+  EditFoodPage({Key? key, required this.foodData, this.onFoodUpdated}) : super(key: key);
 
   @override
   _EditFoodPageState createState() => _EditFoodPageState();
@@ -40,17 +42,20 @@ class _EditFoodPageState extends State<EditFoodPage> {
       "quantity": quantityController.text,
       "price": priceController.text,
       "category": categoryController.text,
-      //"image": imageController.text,
+      "image": imageController.text,
     };
 
     try {
-      await updateFood(
+      await updateFood2(
         widget.foodData['data']['id'].toString(),
         updatedFoodData,
+        imageFile,
       );
 
-      // Pass the updated data back to the previous screen (ResHomePage)
       Navigator.pop(context, updatedFoodData);
+      if (widget.onFoodUpdated != null) {
+        widget.onFoodUpdated!();
+      }
     } catch (e) {
       showDialog(
         context: context,
@@ -71,6 +76,7 @@ class _EditFoodPageState extends State<EditFoodPage> {
       );
     }
   }
+
 
   Widget buildTextField({
     required TextEditingController controller,
@@ -123,7 +129,6 @@ class _EditFoodPageState extends State<EditFoodPage> {
       },
     );
   }
-
   Future<void> _getFromGallery() async {
     final picker = ImagePicker();
     try {
@@ -161,6 +166,7 @@ class _EditFoodPageState extends State<EditFoodPage> {
       print("Error picking image from camera: $e");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

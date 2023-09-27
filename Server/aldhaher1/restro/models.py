@@ -49,3 +49,23 @@ class food(models.Model):
     image = models.ImageField(upload_to='food_images/')
     def __str__(self):
         return self.food_name
+    
+
+
+class RestaurantCart(models.Model):
+    user_id = models.CharField(max_length=20, null=False)
+    user_name = models.CharField(max_length=20, null=False)
+    food_name = models.CharField(max_length=100, null=False)
+    food_price = models.CharField(max_length=20, null=False)
+    restaurant_name = models.CharField(max_length=50)
+    restaurant_id = models.CharField(max_length=20)
+    def __str__(self):
+        return self.user_id
+
+
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    items = models.ManyToManyField(food)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

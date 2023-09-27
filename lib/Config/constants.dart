@@ -1,5 +1,5 @@
 class ApiConstants{
-  static String baseUrl ='https://b7e1-2409-40f3-1006-c878-64da-a5a2-bfba-835c.ngrok-free.app';
+  static String baseUrl ='https://8cc3-2409-40f3-1006-c878-e0d6-d58f-7222-ebf9.ngrok-free.app';
 
   static String register = '/api/userRegistrerAPI';
   static String login = '/api/LogiAPIView';
@@ -20,4 +20,6 @@ class ApiConstants{
   static String foodDelete = '/api/DeleteFoodAPI';
   static String foodAllRestaurant ='/api/ViewAllRestaurantFoodsAPI';
   static String searchFood = '/api/FoodSearchAPI';
+
+  static String addToCart = '/api/RestaurantCartAPI';
 }

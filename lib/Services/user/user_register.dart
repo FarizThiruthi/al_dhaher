@@ -78,6 +78,7 @@ Future<void> registerUser({
   required String phoneNumber,
   required String location,
   required String pin,
+  //required int userId,
 }) async {
   final Map<String, dynamic> userData = {
     "name": fullName,
@@ -103,8 +104,8 @@ Future<void> registerUser({
       prefs.setString('phoneNumber', phoneNumber);
 
       // Redirect to the UserHomePage
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => UserHomePage()));
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => UserHomePage(userId: userId)));
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(body['message'])));

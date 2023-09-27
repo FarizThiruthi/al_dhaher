@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from rest_framework import generics
-from.serializers import loginUserSerializer,UserSerializer,RestaurantSerializer,FoodSerializer
-from.models import user,login,restaurant,food
+from.serializers import loginUserSerializer,UserSerializer,RestaurantSerializer,FoodSerializer,CartSerializer,RestaurantCartSerializer
+from.models import user,login,restaurant,food,Cart,RestaurantCart
 
 
 from rest_framework.response import Response
@@ -498,5 +498,103 @@ class DeleteFoodAPI(GenericAPIView):
             single_food = food.objects.get(pk=food_id)
             single_food.delete()
             return Response({'message': 'Food deleted successfully', 'success': True}, status=status.HTTP_200_OK)
+        except food.DoesNotExist:
+            return Response({'message': 'Food not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class RestaurantCartAPI(GenericAPIView):
+    serializer_class = RestaurantCartSerializer
+
+    def post(self, request):
+        food_name = ''
+        food_price = ''
+        user_name = ''
+        restaurant_name = ''
+        restaurant_id = ''
+        user_id = request.data.get('user_id')
+        food_id = request.data.get('food_id')
+
+        # Retrieve food data from your existing food model (assuming you have a model called 'food')
+        try:
+            food_item = food.objects.get(id=food_id)
+            food_name = food_item.food_name
+            food_price = food_item.price
+            restaurant_name = food_item.restaurant_name
+            restaurant_id = food_item.restaurant_id
+
+
+            # Retrieve user data based on user_id (You need to implement this logic)
+            try:
+                user_instance = user.objects.get(id=user_id)
+                user_name = user_instance.name  # Update user_name with the retrieved user's name
+            except user.DoesNotExist:
+                return Response({'message': 'User not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)
+
+            # Now, you have restaurant_name, and you can optionally fetch restaurant_id if needed
+
+            # Create a new cart item
+            serializer = self.serializer_class(data={
+                'restaurant_id': restaurant_id,  # Include the restaurant id in the cart item (if available)
+                'user_id': user_id,
+                'user_name': user_name,
+                'food_name': food_name,
+                'food_price': food_price,
+                'restaurant_name': restaurant_name,
+            })
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'data': serializer.data, 'message': 'Cart added successfully', 'success': True},
+                                status=status.HTTP_201_CREATED)
+            return Response({'message': 'Cart adding failed', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
+
+        except food.DoesNotExist:
+            return Response({'message': 'Food not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)
+
+
+# class AddToCartAPI(generics.CreateAPIView):
+#     serializer_class = CartSerializer
+
+#     def create(self, request):
+#         user = request.user  # Assuming you are using authentication
+#         food_id = request.data.get('food_id')
+#         try:
+#             food = food.objects.get(pk=food_id)
+#             cart, created = Cart.objects.get_or_create(user=user)
+#             cart.items.add(food)
+#             cart.total_price += food.price
+#             cart.save()
+#             return Response({'message': 'Item added to cart successfully', 'success': True}, status=status.HTTP_201_CREATED)
+#         except food.DoesNotExist:
+#             return Response({'message': 'Food not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)
+
+class AddToCartAPI(GenericAPIView):
+    serializer_class = CartSerializer
+
+    def create(self, request):
+        user_id = request.user.id  # Assuming you are using authentication and have access to the user's ID
+        restaurant_id = request.data.get('restaurant_id')  # Assuming you have a way to get the restaurant's ID
+        food_id = request.data.get('food_id')
+        
+        try:
+            food_item = food.objects.get(pk=food_id)
+            
+            # Check if the food item belongs to the same restaurant as identified by restaurant_id
+            if food_item.restaurant_id != restaurant_id:
+                return Response({'message': 'Food item does not belong to your restaurant', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Add the item to the user's cart
+            cart, created = Cart.objects.get_or_create(user_id=user_id)
+            
+            # Check if the food item is already in the cart
+            if food_item in cart.items.all():
+                return Response({'message': 'Food item is already in the cart', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
+            
+            cart.items.add(food_item)
+            cart.total_price += float(food_item.price)
+            cart.save()
+            
+            return Response({'message': 'Item added to cart successfully', 'success': True}, status=status.HTTP_201_CREATED)
+        
         except food.DoesNotExist:
             return Response({'message': 'Food not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)

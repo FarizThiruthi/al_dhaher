@@ -35,7 +35,7 @@ class Data {
   String? quantity;
   String? price;
   String? category;
-  Null? image;
+  String? image;
 
   Data(
       {this.id,

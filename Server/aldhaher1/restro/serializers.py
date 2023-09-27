@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import login,user,restaurant,food
+from .models import login,user,restaurant,food,Cart,RestaurantCart
 
 
 class loginUserSerializer (serializers.ModelSerializer):
@@ -30,5 +30,17 @@ class FoodSerializer(serializers.ModelSerializer):
         fields = '__all__'
     def create(self,validated_data):
         return food.objects.create(**validated_data)
+    
 
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
 
+class RestaurantCartSerializer(serializers.ModelSerializer):
+    restaurant_id = serializers.CharField(source='food.restaurant_id', read_only=True)
+    restaurant_name = serializers.CharField(source='food.restaurant_name', read_only=True)
+
+    class Meta:
+        model = RestaurantCart
+        fields = '__all__'

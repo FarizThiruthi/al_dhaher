@@ -913,3 +913,80 @@ class _EditFoodPageState extends State<EditFoodPage> {
 //
 
 //}
+//Future<void> editFood() async {
+//     final updatedFoodData = {
+//       "food_name": foodNameController.text,
+//       "quantity": quantityController.text,
+//       "price": priceController.text,
+//       "category": categoryController.text,
+//       "image": imageController.text,
+//     };
+//
+//     try {
+//       await updateFood(
+//         widget.foodData['data']['id'].toString(),
+//         updatedFoodData,
+//       );
+//
+//       // Pass the updated data back to the previous screen (ResHomePage)
+//       Navigator.pop(context, updatedFoodData);
+//     } catch (e) {
+//       showDialog(
+//         context: context,
+//         builder: (BuildContext context) {
+//           return AlertDialog(
+//             title: Text('Update Error'),
+//             content: Text('Failed to update food data: $e'),
+//             actions: <Widget>[
+//               TextButton(
+//                 child: Text('OK'),
+//                 onPressed: () {
+//                   Navigator.of(context).pop(); // Close the dialog
+//                 },
+//               ),
+//             ],
+//           );
+//         },
+//       );
+//     }
+//   }
+
+
+
+//  Future<void> _getFromGallery() async {
+//     final picker = ImagePicker();
+//     try {
+//       final pickedFile = await picker.pickImage(
+//         source: ImageSource.gallery,
+//         maxWidth: 1800,
+//         maxHeight: 1800,
+//       );
+//       if (pickedFile != null) {
+//         setState(() {
+//           imageFile = File(pickedFile.path);
+//           imageController.text = imageFile!.path.split('/').last; // Set the image file name
+//         });
+//       }
+//     } catch (e) {
+//       print("Error picking image from gallery: $e");
+//     }
+//   }
+//
+//   Future<void> _getFromCamera() async {
+//     final picker = ImagePicker();
+//     try {
+//       final pickedFile = await picker.pickImage(
+//         source: ImageSource.camera,
+//         maxWidth: 1800,
+//         maxHeight: 1800,
+//       );
+//       if (pickedFile != null) {
+//         setState(() {
+//           imageFile = File(pickedFile.path);
+//           imageController.text = imageFile!.path.split('/').last; // Set the image file name
+//         });
+//       }
+//     } catch (e) {
+//       print("Error picking image from camera: $e");
+//     }
+//   }

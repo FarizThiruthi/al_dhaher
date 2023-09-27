@@ -383,6 +383,8 @@
 //   );
 // }
 
+import 'dart:convert';
+
 import 'package:al_dhaher/Pages/restaurantPage/food/addFoodPage.dart';
 import 'package:al_dhaher/Pages/restaurantPage/searchFoodPage.dart';
 import 'package:flutter/material.dart';
@@ -429,12 +431,13 @@ class _ManageFoodPageState extends State<ManageFoodPage> {
       // Fetch food data
       Map<String, dynamic> foodData = await updateFood(
           foodId, {}); // Pass an empty map as the second argument
+      print('Response Body: $foodData');
 
       // Navigate to the EditFoodPage and pass the food data
       final updatedFoodData = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EditFoodPage(foodData: foodData),
+          builder: (context) => EditFoodPage(foodData: foodData,onFoodUpdated: _refreshData,),
         ),
       );
 
@@ -545,19 +548,26 @@ class _ManageFoodPageState extends State<ManageFoodPage> {
                     elevation: 3.0,
                     margin: EdgeInsets.all(10.0),
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.black,
-                        child: Text(
-                          food.foodName?.isNotEmpty == true
-                              ? food.foodName![0].toUpperCase()
-                              : '?',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.black,
+                          child: (food.image != null && food.image!.isNotEmpty)
+                              ? Image.network(
+                            food.image!, // Use the non-nullable image here
+                            fit: BoxFit.cover,
+                          )
+                              : Text(
+                            food.foodName?.isNotEmpty == true
+                                ? food.foodName![0].toUpperCase()
+                                : '?',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                      title: Text(food.foodName ?? ''),
+
+
+                        title: Text(food.foodName ?? ''),
                       subtitle: Text('Price: \$${food.price ?? ''}'),
                       trailing: PopupMenuButton<String>(
                         onSelected: (value) {

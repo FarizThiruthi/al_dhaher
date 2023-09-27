@@ -43,6 +43,7 @@ urlpatterns = [
     path('DeleteFoodAPI/<int:food_id>/', views.DeleteFoodAPI.as_view(), name='DeleteFoodAPI'),
     # path('ViewAllRestaurantFoodsAPI/<int:restaurant_id>/', views.ViewAllRestaurantFoodsAPI.as_view(), name='ViewAllRestaurantFoodsAPI'),
     path('ViewAllRestaurantFoodsAPI/<int:restaurant_id>/', views.ViewAllRestaurantFoodsAPI.as_view(), name='ViewAllRestaurantFoodsAPI'),
+    path('RestaurantCartAPI', views.RestaurantCartAPI.as_view(), name='RestaurantCartAPI'),
 
     path('FoodSearchAPI', views.FoodSearchAPI.as_view(), name='FoodSearchAPI'),
 ]
