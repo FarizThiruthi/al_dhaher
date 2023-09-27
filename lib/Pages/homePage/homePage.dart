@@ -9,6 +9,8 @@ import '../loginPage/loginPage.dart';
 import '../restaurantPage/food/foodDetailsPage.dart';
 
 class UserHomePage extends StatefulWidget {
+
+
   @override
   _UserHomePageState createState() => _UserHomePageState();
 }
@@ -16,6 +18,7 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   List<Data> foodList = [];
   String userName = '';
+  late int userId  ;
 
   @override
   void initState() {
@@ -27,6 +30,7 @@ class _UserHomePageState extends State<UserHomePage> {
   void fetchUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedUserName = prefs.getString('restoName');
+    userId = prefs.getInt('userId')??0;
     if (storedUserName != null) {
       setState(() {
         userName = storedUserName; // Update the user name
@@ -141,7 +145,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       child:
                           (foodItem.image != null && foodItem.image!.isNotEmpty)
                               ? Image.network(
-                                  foodItem.image!,
+                                  ApiConstants.baseUrl+foodItem.image!,
                                   fit: BoxFit.cover,
                                 )
                               : Text(
@@ -160,11 +164,11 @@ class _UserHomePageState extends State<UserHomePage> {
                       icon: Icon(Icons.add_shopping_cart),
                       onPressed: () {
                         // Add the selected item to the cart or perform the desired action
-                        // addToCart(
-                        //   context: context,
-                        //   userId: widget.userId, // Pass the userId from the widget
-                        //   foodId: foodItem.id ?? 0, // Pass the foodId
-                        // );
+                        addToCart(
+                          context: context,
+                          userId: userId, // Pass the userId from the widget
+                          foodId: foodItem.id ?? 0, // Pass the foodId
+                        );
                       },
                     ),
                   ),

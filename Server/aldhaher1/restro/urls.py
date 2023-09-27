@@ -41,7 +41,9 @@ urlpatterns = [
     path('ViewSingleFoodAPI/<int:food_id>/', views.ViewSingleFoodAPI.as_view(), name='ViewSingleFoodAPI'),
     path('UpdateFoodAPI/<int:food_id>/', views.UpdateFoodAPI.as_view(), name='UpdateFoodAPI'),
     path('DeleteFoodAPI/<int:food_id>/', views.DeleteFoodAPI.as_view(), name='DeleteFoodAPI'),
-    # path('ViewAllRestaurantFoodsAPI/<int:restaurant_id>/', views.ViewAllRestaurantFoodsAPI.as_view(), name='ViewAllRestaurantFoodsAPI'),
+    path('ViewCartItemsAPI/<int:user_id>',views.ViewCartItemsAPI.as_view(),name='ViewCartItemsAPI'),
+    path('DeleteCartAPI/<int:user_id>',views.DeleteCartAPI.as_view(),name='DeleteCartAPI'),
+    
     path('ViewAllRestaurantFoodsAPI/<int:restaurant_id>/', views.ViewAllRestaurantFoodsAPI.as_view(), name='ViewAllRestaurantFoodsAPI'),
     path('RestaurantCartAPI', views.RestaurantCartAPI.as_view(), name='RestaurantCartAPI'),
 

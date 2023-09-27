@@ -7,6 +7,8 @@ from.models import user,login,restaurant,food,Cart,RestaurantCart
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
+from rest_framework.exceptions import NotFound
+
 
 
  # Create your views here.
@@ -436,6 +438,9 @@ class ViewAllFoodsAPI(GenericAPIView):
     def get(self, request):
         foods = food.objects.all()
         serializer = self.serializer_class(foods, many=True)
+        for data in serializer.data:
+            if 'http://127.0.0.1:8000' in str(data['image']):
+                data['image'] = str(data['image']).split('http://127.0.0.1:8000')[1]
         return Response({'data': serializer.data, 'message': 'All foods data', 'success': True}, status=status.HTTP_200_OK)
 
 class ViewSingleFoodAPI(GenericAPIView):
@@ -445,10 +450,11 @@ class ViewSingleFoodAPI(GenericAPIView):
         try:
             single_food = food.objects.get(pk=food_id)
             serializer = self.serializer_class(single_food)
+            
             return Response({'data': serializer.data, 'message': 'Single food data', 'success': True}, status=status.HTTP_200_OK)
         except food.DoesNotExist:
             return Response({'message': 'Food not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)
-        
+
 class ViewAllRestaurantFoodsAPI(generics.ListAPIView):
     serializer_class = FoodSerializer
 
@@ -459,7 +465,27 @@ class ViewAllRestaurantFoodsAPI(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
+
+        # Modify the 'image' field for each item in the serialized data
+        # for data in serializer.data:
+        #     if 'http://127.0.0.1:8000' in str(data['image']):
+        #         data['image'] = str(data['image']).split('http://127.0.0.1:8000')[1]
+
         return Response({'data': serializer.data, 'message': 'All restaurant foods data', 'success': True}, status=status.HTTP_200_OK)
+
+
+# class ViewAllRestaurantFoodsAPI(generics.ListAPIView):
+#     serializer_class = FoodSerializer
+
+#     def get_queryset(self):
+#         restaurant_id = self.kwargs['restaurant_id']
+#         return food.objects.filter(restaurant_id=restaurant_id)
+
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.get_queryset()
+#         serializer = self.get_serializer(queryset, many=True)
+#         serializer.data['image']=str(serializer.data['image']).split('http://127.0.0.1:8000')['1']
+#         return Response({'data': serializer.data, 'message': 'All restaurant foods data', 'success': True}, status=status.HTTP_200_OK)
 
 class UpdateFoodAPI(GenericAPIView):
     serializer_class = FoodSerializer
@@ -513,10 +539,14 @@ class RestaurantCartAPI(GenericAPIView):
         restaurant_id = ''
         user_id = request.data.get('user_id')
         food_id = request.data.get('food_id')
+        
+        food_item = food.objects.get(id=food_id)
+        print(food_item),"fgdsdfdf"
 
         # Retrieve food data from your existing food model (assuming you have a model called 'food')
         try:
             food_item = food.objects.get(id=food_id)
+            print(food_item)
             food_name = food_item.food_name
             food_price = food_item.price
             restaurant_name = food_item.restaurant_name
@@ -539,13 +569,15 @@ class RestaurantCartAPI(GenericAPIView):
                 'user_name': user_name,
                 'food_name': food_name,
                 'food_price': food_price,
-                'restaurant_name': restaurant_name,
+                'restaurant_name':restaurant_name,
+
             })
+            print(restaurant_name,"fgfgfgfgfgfgfgfgfgf")
 
             if serializer.is_valid():
                 serializer.save()
                 return Response({'data': serializer.data, 'message': 'Cart added successfully', 'success': True},
-                                status=status.HTTP_201_CREATED)
+                                status=status.HTTP_20_CREATED)
             return Response({'message': 'Cart adding failed', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
 
         except food.DoesNotExist:
@@ -598,3 +630,37 @@ class AddToCartAPI(GenericAPIView):
         
         except food.DoesNotExist:
             return Response({'message': 'Food not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ViewCartItemsAPI(generics.ListAPIView):
+    serializer_class = RestaurantCartSerializer
+
+    def get_queryset(self):
+        user_id = self.request.user.id  # Assuming you are using authentication
+        try:
+            return Cart.objects.filter(user_id=user_id)
+        except Cart.DoesNotExist:
+            raise NotFound("Cart not found for this user.")
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            if not queryset:
+                raise NotFound("Cart is empty for this user.")  # Added for empty cart handling
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'Cart items', 'success': True}, status=status.HTTP_200_OK)
+        except NotFound as e:
+            return Response({'message': str(e), 'success': False}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class DeleteCartAPI(GenericAPIView):
+    def delete(self, request):
+        user_id = request.user.id  # Assuming you are using authentication
+        try:
+            cart = Cart.objects.get(user_id=user_id)
+            cart.items.clear()  # Remove all items from the cart
+            cart.total_price = 0  # Reset the total price
+            cart.save()
+            return Response({'message': 'Cart deleted successfully', 'success': True}, status=status.HTTP_200_OK)
+        except Cart.DoesNotExist:
+            return Response({'message': 'Cart not found', 'success': False}, status=status.HTTP_404_NOT_FOUND)

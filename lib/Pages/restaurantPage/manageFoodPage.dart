@@ -541,30 +541,41 @@ class _ManageFoodPageState extends State<ManageFoodPage> {
               final foodList = snapshot.data!.data!;
 
               return ListView.builder(
+
                 itemCount: foodList.length,
                 itemBuilder: (context, index) {
+
                   final food = foodList[index];
+                  print(food.image!);
+                  var url=food.image!.replaceAll('http://localhost:8000', '${ApiConstants
+                      .baseUrl}');
+                  print('---$url');
                   return Card(
                     elevation: 3.0,
                     margin: EdgeInsets.all(10.0),
                     child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.black,
-                          child: (food.image != null && food.image!.isNotEmpty)
-                              ? Image.network(
-                            food.image!, // Use the non-nullable image here
-                            fit: BoxFit.cover,
-                          )
-                              : Text(
-                            food.foodName?.isNotEmpty == true
-                                ? food.foodName![0].toUpperCase()
-                                : '?',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.black,
+                    backgroundImage: NetworkImage(url),
+
+                  ),
+                        // leading: CircleAvatar(
+                        //   backgroundColor: Colors.black,
+                        //   child: (food.image != null && food.image!.isNotEmpty)
+                        //       ? Image.network(
+                        //     ApiConstants.baseUrl+food.image!, // Use the non-nullable image here
+                        //     fit: BoxFit.cover,
+                        //   )
+                        //       : Text(
+                        //     food.foodName?.isNotEmpty == true
+                        //         ? food.foodName![0].toUpperCase()
+                        //         : '?',
+                        //     style: TextStyle(
+                        //       fontSize: 20,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
 
 
                         title: Text(food.foodName ?? ''),
